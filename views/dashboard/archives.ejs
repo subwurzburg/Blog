@@ -1,0 +1,62 @@
+<% extend('../layout/dashboard-layout') %>
+<div class="main container-fluid my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="btn-group w-100">
+                <a href="/dashboard/archives?status=public" class="btn btn-outline-secondary w-100 rounded-0 <%if(status==='public'){%>active<%}%>">已發佈</a>
+                <a href="/dashboard/archives?status=draft" class="btn btn-outline-secondary w-100 rounded-0 <%if(status==='draft'){%>active<%}%>">草稿</a>
+                <a href="/dashboard/article/create" class="btn btn-primary">新增文章</a>
+            </div>
+            <%for(var DataNum in articles){%>
+            <% console.log(articles[DataNum]) %>
+            <div class="card my-3">
+                <h4 class="card-header">
+                    <%- articles[DataNum].title %>
+                </h4>
+                <div class="card-body">
+                    <%- stringtags(articles[DataNum].content).slice(0,100)%>...
+                    <div>
+                        <span class="fa fa-clock-o"></span>
+                        <%- moment(articles[DataNum].update_time*1000).format('YYYY-MM-DD HH:mm:ss') %>
+                        ,
+                        <span class="fa fa-folder-open-o"></span>
+                        <span>
+                            <% for(var DataNum2 in categories){%>
+                                <%if(DataNum2 === articles[DataNum].category){%>
+                                    <%-  categories[DataNum2].name %>
+                                <%}%>
+                            <%} %>
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer p-0 btn-group">
+                    <a href="#" class="btn btn-outline-danger rounded-0 deletePost" data-id="<%-articles[DataNum].id %>"
+                        data-title="<%- articles[DataNum].title%>">刪除</a>
+                    <a href="/dashboard/article/<%-articles[DataNum].id%>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
+                </div>
+            </div>
+            <%}%>
+        </div>
+    </div>
+
+    
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.deletePost').on('click',function(e){
+            e.preventDefault();
+            var id = $(this).data('id');
+            var title = $(this).data('title');
+            if(confirm('是否刪除'+title)){
+                $.ajax({
+                    method:'Post',
+                    url:'/dashboard/article/delete/'+id
+                }).done(function(res){
+                    alert('文章已經刪除');
+                    window.location = '/dashboard/archives?status=public';
+                })
+            }
+        })
+    })
+</script>

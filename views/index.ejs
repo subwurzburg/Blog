@@ -1,0 +1,35 @@
+<% extend('layout/layout') %>
+<div class="container">
+  <div class="row my-4 justify-content-center">
+    <div class="col-md-9">
+      <%for(var DataNum in articles){%>
+        <% console.log(articles[DataNum].category)%>
+      <div class="card mb-3">
+        <div class="card-body">
+          <a href="/post/<%-articles[DataNum].id%>">
+            <h2 class="text-primary"><%- articles[DataNum].title %></h2>
+          </a>
+          <div class="d-flex flex-row text-secondary small">
+            <div class="p-2"><span class="fa fa-clock-o"></span>
+              <%- moment(articles[DataNum].update_time*1000).format('YYYY-MM-DD HH:mm:ss') %></div>
+            <div class="p-2"><i class="fa fa-tag" aria-hidden="true"></i>
+              <a href="/category/<%- articles[DataNum].category%>" class="text-info">
+                <% for(var DataNum2 in categories){%>
+                <%if(DataNum2 === articles[DataNum].category){%>
+                <%-  categories[DataNum2].name %>
+                <%}%>
+              <%} %>
+              </a>
+            </div>
+          </div>
+          <div>
+            <%- stringtags(articles[DataNum].content).slice(0,100)%>...
+          </div>
+        </div>
+      </div>
+      <%}%>
+    </div>
+  </div>
+
+  <%- include('partical/pagination.ejs')%>
+</div>
